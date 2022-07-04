@@ -11,7 +11,7 @@
 #include "lorawan/system/lorawan_data_structures.h"
 #include "events/EventQueue.h"
 
-
+#define     VERBOSE_MODE
 
 #define     TX_RX_BUFFER_SIZE   30      // Max size of Tx and Rx buffers 
 

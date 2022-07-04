@@ -95,7 +95,9 @@ int8_t  lora_init(void)
         return -1;
     }
 
+    #ifdef VERBOSE_MODE
     printf("\r\n Mbed LoRaWANStack initialized \r\n");
+    #endif
 
     // prepare application callbacks
     callbacks.events = mbed::callback(lora_event_handler);
@@ -108,8 +110,10 @@ int8_t  lora_init(void)
         return -1;
     }
 
+    #ifdef VERBOSE_MODE
     printf("\r\n CONFIRMED message retries : %d \r\n",
            CONFIRMED_MSG_RETRY_COUNTER);
+    #endif
 
     // Enable adaptive data rate
     if (lorawan.enable_adaptive_datarate() != LORAWAN_STATUS_OK) {
@@ -117,7 +121,9 @@ int8_t  lora_init(void)
         return -1;
     }
 
+    #ifdef VERBOSE_MODE
     printf("\r\n Adaptive data  rate (ADR) - Enabled \r\n");
+    #endif
 
     retcode = lorawan.connect();
 
@@ -128,14 +134,10 @@ int8_t  lora_init(void)
         return -1;
     }
 
+    #ifdef VERBOSE_MODE
     printf("\r\n Connection - In Progress ...\r\n");
-
+    #endif
     
-
-
-
-
-
     return 0;
 }
 //----------------------------------------------------------------------------
@@ -170,7 +172,10 @@ static void send_message()
         return;
     }
 
+    #ifdef VERBOSE_MODE
     printf("\r\n %d bytes scheduled for transmission \r\n", retcode);
+    #endif
+
     memset(tx_buffer, 0, sizeof(tx_buffer));
 }
 //----------------------------------------------------------------------------
@@ -204,17 +209,25 @@ static void lora_event_handler(lorawan_event_t event)
 {
     switch (event) {
         case CONNECTED:
+            #ifdef VERBOSE_MODE
             printf("\r\n Connection - Successful \r\n");
-            
+            #endif 
+
             // Start  threads
             send_th.start(send_thread);
             break;
         case DISCONNECTED:
             ev_queue.break_dispatch();
+            #ifdef VERBOSE_MODE
             printf("\r\n Disconnected Successfully \r\n");
+            #endif
+
             break;
         case TX_DONE:
+            #ifdef VERBOSE_MODE
             printf("\r\n Message Sent to Network Server \r\n");
+            #endif
+            
             if (MBED_CONF_LORA_DUTY_CYCLE_ON) {
                 send_message();
             }
